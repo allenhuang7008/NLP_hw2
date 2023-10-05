@@ -91,7 +91,7 @@ def attention(query, key, value, mask=None, dropout=None):
     
     ### YOUR CODE GOES HERE ########
     d_k = query.size(-1)
-    score = torch.matmul(query, key.transpose(-2, -1)) / (d_k**2) # compute the scaled dot product (N, Lq, Lk)
+    score = torch.matmul(query, key.transpose(-2, -1)) / (d_k**0.5) # compute the scaled dot product (N, Lq, Lk)
 
     # mask unwanted tokens
     if mask is not None:
