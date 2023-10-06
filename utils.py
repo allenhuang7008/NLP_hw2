@@ -196,6 +196,7 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
     # convert the top scored sequence to a list of text tokens
     ys, _ = max(zip(ys, scores), key=lambda x: x[1])
     ys = ys.unsqueeze(0)
+    print(ys)
     
     return ys
     
