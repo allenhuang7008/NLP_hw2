@@ -158,9 +158,25 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
         ### YOUR CODE GOES HERE ########
         ################################
         ################################
+        log_prob = torch.log(prob) # size (beam_size, vocab_size)
+        scores = scores.unsqueeze(1).expand_as(log_prob) # fill the scores of first dim to second dim
+        new_scores = scores + log_prob # size (beam_size, vocab_size)
+        top_val, top_idx = torch.topk(new_scores.view(-1), beam_size, sorted=False) # flatten 2D new_scores to find topk
+
+        # convert top_idx back to 2D
+        new_ys = []
+        for idx in top_idx:
+            recent_pos = idx // vocab_size
+            cur_pos = idx % vocab_size
+            if ys[recent_pos, -1].item() != end_idx:
+                new_ys.append(torch.cat([ys[recent_pos], torch.tensor([cur_pos])]))
+            else:
+                new_ys.append(torch.cat([ys[recent_pos], torch.tensor([end_idx])]))
         
-        
-        raise NotImplementedError
+        # update scores and ys
+        ys = torch.stack(new_ys) # size (beam_size, i+1)
+        scores = top_val
+
         
         
         ### YOUR CODE ENDS HERE #######
