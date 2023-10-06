@@ -169,9 +169,9 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
             recent_pos = idx // vocab_size
             cur_pos = idx % vocab_size
             if ys[recent_pos, -1].item() != end_idx:
-                new_ys.append(torch.cat([ys[recent_pos], torch.tensor([cur_pos])]))
+                new_ys.append(torch.cat([ys[recent_pos], torch.tensor([cur_pos]).cuda()]))
             else:
-                new_ys.append(torch.cat([ys[recent_pos], torch.tensor([end_idx])]))
+                new_ys.append(torch.cat([ys[recent_pos], torch.tensor([end_idx]).cuda()]))
         
         # update scores and ys
         ys = torch.stack(new_ys) # size (beam_size, i+1)
