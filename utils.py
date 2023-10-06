@@ -159,11 +159,11 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
         ################################
         ################################
         log_prob = torch.log(prob) # size (beam_size, vocab_size)
-        print('log_prob shape:', log_prob.shape)
+        print('log_prob', log_prob)
         new_scores = scores.unsqueeze(1).expand_as(log_prob) + log_prob # fill the scores of first dim to second dim, size (beam_size, vocab_size)
-        print('new_score shape:', new_scores.shape)
+        print('new_score', new_scores)
         top_val, top_idx = torch.topk(new_scores.view(-1), beam_size, sorted=False) # flatten 2D new_scores to find topk
-
+        print('top_val:',top_val)
         # convert top_idx back to 2D
         new_ys = []
         for idx in top_idx:
@@ -173,7 +173,8 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
                 new_ys.append(torch.cat([ys[recent_pos], torch.tensor([cur_pos]).cuda()]))
             else:
                 new_ys.append(torch.cat([ys[recent_pos], torch.tensor([end_idx]).cuda()]))
-        
+
+        print('new_ys:', new_ys)
         # update scores and ys
         ys = torch.stack(new_ys) # size (beam_size, i+1)
         scores = top_val
