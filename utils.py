@@ -174,7 +174,7 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
                 new_ys.append(torch.cat([ys[recent_pos], torch.tensor([end_idx]).cuda()]))
         
         # update scores and ys
-        ys = torch.stack(new_ys) # size (beam_size, i+1)
+        ys = torch.stack(new_ys).cuda() # size (beam_size, i+1)
         scores = top_val
 
         
