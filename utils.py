@@ -159,9 +159,7 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
         ################################
         ################################
         print('prob:', prob) if i == 0 else None
-        log_prob = torch.log(prob) # size (beam_size, vocab_size)
-        print('log_prob', log_prob) if i == 0 else None
-        new_scores = scores.unsqueeze(1).expand_as(log_prob) + log_prob # fill the scores of first dim to second dim, size (beam_size, vocab_size)
+        new_scores = scores.unsqueeze(1).expand_as(prob) + prob # fill the scores of first dim to second dim, size (beam_size, vocab_size)
         print('new_score', new_scores) if i == 0 else None
         top_val, top_idx = torch.topk(new_scores.view(-1), beam_size, sorted=False) # flatten 2D new_scores to find topk
         print('top_val:',top_val) if i == 0 else None
