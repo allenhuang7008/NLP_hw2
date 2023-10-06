@@ -158,11 +158,16 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
         ### YOUR CODE GOES HERE ########
         ################################
         ################################
-        print('prob:', prob) if i == 0 else None
+        unit_test = False # unit test flag
         new_scores = scores.unsqueeze(1).expand_as(prob) + prob # fill the scores of first dim to second dim, size (beam_size, vocab_size)
-        print('new_score', new_scores) if i == 0 else None
         top_val, top_idx = torch.topk(new_scores.view(-1), beam_size, sorted=False) # flatten 2D new_scores to find topk
-        print('top_val:',top_val) if i == 0 else None
+
+        # unit test
+        if i == 0 and unit_test == True:
+            print('prob:', prob)
+            print('new_score', new_scores)
+            print('top_val:',top_val)
+        
         # convert top_idx back to 2D
         new_ys = []
         for idx in top_idx:
@@ -173,13 +178,16 @@ def beam_search_decode(model, src, src_mask, max_len, start_symbol, beam_size, e
             else:
                 new_ys.append(torch.cat([ys[recent_pos], torch.tensor([end_idx]).cuda()]))
 
-        print('new_ys:', new_ys) if i == 0 else None
+        
         # update scores and ys
         ys = torch.stack(new_ys) # size (beam_size, i+1)
         scores = top_val
-        print('ys shape:', ys.shape) if i == 0 else None
-        print('scores shape:', scores.shape) if i == 0 else None
         
+        #unit test
+        if i == 0 and unit_test == True:
+            print('new_ys:', new_ys)
+            print('ys shape:', ys.shape)
+            print('scores shape:', scores.shape)
         
         ### YOUR CODE ENDS HERE #######
         
